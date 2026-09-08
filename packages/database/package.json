@@ -1,0 +1,28 @@
+{
+  "name": "@to-our-self/database",
+  "version": "0.0.1",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": ["dist", "migrations"],
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src --fix",
+    "migrate:up": "node dist/migrate.js up",
+    "migrate:down": "node dist/migrate.js down",
+    "seed": "node dist/seed.js"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.5",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "pg": "^8.11.3",
+    "@to-our-self/shared": "workspace:*"
+  }
+}
