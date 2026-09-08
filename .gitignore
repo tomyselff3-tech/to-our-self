@@ -1,47 +1,11 @@
-# Dependencies
-node_modules/
-pnpm-lock.yaml
-package-lock.json
-yarn.lock
-
-# Build
-dist/
-build/
-.next/
-out/
-
-# Environment
+node_modules
+.turbo
+dist
+build
+coverage
+*.log
+.DS_Store
 .env
 .env.local
-.env.*.local
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*.swn
-.DS_Store
-*.iml
-
-# Logs
-logs/
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Testing
-coverage/
-.nyc_output/
-
-# Turbo
-.turbo/
-
-# OS
-thumbs.db
-Thumbs.db
-
-# Docker
-docker/db/data/
-docker/.env
+.vscode
+.idea

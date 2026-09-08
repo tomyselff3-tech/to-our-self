@@ -5,6 +5,8 @@ import fastifyRateLimit from '@fastify/rate-limit';
 import fastifyWebsocket from '@fastify/websocket';
 import pino from 'pino';
 import { initializeDatabase } from '@to-our-self/database';
+import { initializeRedis, setupWebSocketRoutes } from './realtime';
+import { setupAuthentication } from './middleware/auth';
 import { createAuthRoutes } from './routes/auth';
 import { createGameRoutes } from './routes/games';
 import { createProfileRoutes } from './routes/profiles';
@@ -22,16 +24,14 @@ const logger = pino(
   pino.destination()
 );
 
-// Extend Fastify Request to include auth context
-declare global {
-  namespace Express {
-    interface Request {
-      authContext?: AuthContext;
-    }
+const app = Fastify({ logger });
+
+// Extend Fastify to include auth context
+declare module 'fastify' {
+  interface FastifyRequest {
+    user?: AuthContext;
   }
 }
-
-const app = Fastify({ logger });
 
 // Register plugins
 await app.register(fastifyHelmet, {
@@ -40,6 +40,7 @@ await app.register(fastifyHelmet, {
       defaultSrc: ["'self'"],
       styleSrc: ["'self'", "'unsafe-inline'"],
       scriptSrc: ["'self'"],
+      connectSrc: ["'self'", 'ws:', 'wss:'],
     },
   },
 });
@@ -56,18 +57,34 @@ await app.register(fastifyRateLimit, {
 
 await app.register(fastifyWebsocket);
 
-// Initialize database
+// Initialize services
 const databaseUrl = process.env.DATABASE_URL;
 if (!databaseUrl) {
   throw new Error('DATABASE_URL environment variable is required');
 }
 initializeDatabase(databaseUrl);
 
+const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379';
+await initializeRedis(redisUrl);
+
+// Setup middleware
+await setupAuthentication(app);
+
+// Error handler
+app.setErrorHandler((error, request, reply) => {
+  app.log.error(error);
+  reply.status(500).send({
+    error: error.message,
+    code: (error as any).code,
+  });
+});
+
 // Routes
 await app.register(createHealthRoutes);
 await app.register(createAuthRoutes);
 await app.register(createGameRoutes);
 await app.register(createProfileRoutes);
+await setupWebSocketRoutes(app);
 
 // Start server
 const host = process.env.API_HOST || '0.0.0.0';
