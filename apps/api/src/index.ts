@@ -1,4 +1,4 @@
-import Fastify, { FastifyRequest, FastifyReply } from 'fastify';
+import Fastify from 'fastify';
 import fastifyHelmet from '@fastify/helmet';
 import fastifyCors from '@fastify/cors';
 import fastifyRateLimit from '@fastify/rate-limit';
@@ -7,10 +7,11 @@ import pino from 'pino';
 import { initializeDatabase } from '@to-our-self/database';
 import { initializeRedis, setupWebSocketRoutes } from './realtime';
 import { setupAuthentication } from './middleware/auth';
+import { setupHealthRoutes } from './routes/health';
 import { createAuthRoutes } from './routes/auth';
 import { createGameRoutes } from './routes/games';
 import { createProfileRoutes } from './routes/profiles';
-import { createHealthRoutes } from './routes/health';
+import { createAdminRoutes } from './routes/admin';
 import { AuthContext } from '@to-our-self/shared';
 
 const logger = pino(
@@ -26,7 +27,6 @@ const logger = pino(
 
 const app = Fastify({ logger });
 
-// Extend Fastify to include auth context
 declare module 'fastify' {
   interface FastifyRequest {
     user?: AuthContext;
@@ -80,10 +80,11 @@ app.setErrorHandler((error, request, reply) => {
 });
 
 // Routes
-await app.register(createHealthRoutes);
+await setupHealthRoutes(app);
 await app.register(createAuthRoutes);
 await app.register(createGameRoutes);
 await app.register(createProfileRoutes);
+await app.register(createAdminRoutes);
 await setupWebSocketRoutes(app);
 
 // Start server
@@ -93,7 +94,7 @@ const port = parseInt(process.env.API_PORT || '3000', 10);
 const start = async (): Promise<void> => {
   try {
     await app.listen({ host, port });
-    console.log(`✓ API server running at http://${host}:${port}`);
+    console.log(`✅ API server running at http://${host}:${port}`);
   } catch (error) {
     app.log.error(error);
     process.exit(1);
