@@ -1,0 +1,14 @@
+node_modules
+dist
+.git
+.gitignore
+README.md
+.env
+.env.local
+.vscode
+.idea
+coverage
+.turbo
+npm-debug.log
+*.swp
+*.swo
