@@ -1,0 +1,26 @@
+{
+  "name": "@to-our-self/missions",
+  "version": "0.0.1",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src --fix"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.5",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "@to-our-self/shared": "workspace:*",
+    "@to-our-self/database": "workspace:*",
+    "@to-our-self/economy": "workspace:*"
+  }
+}
