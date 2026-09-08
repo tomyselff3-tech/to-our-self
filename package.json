@@ -1,0 +1,34 @@
+{
+  "name": "@to-our-self/root",
+  "version": "0.0.1",
+  "description": "Multiplayer gaming platform on Telegram with Mini Apps",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@9.0.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "lint": "eslint --fix .",
+    "typecheck": "tsc --noEmit",
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "test": "turbo test",
+    "test:coverage": "turbo test -- --coverage",
+    "db:migrate": "node scripts/db-migrate.js",
+    "db:seed": "node scripts/db-seed.js",
+    "docker:build": "docker build -f docker/Dockerfile -t to-our-self:latest .",
+    "docker:up": "docker compose -f docker/docker-compose.yml up -d",
+    "docker:down": "docker compose -f docker/docker-compose.yml down",
+    "start": "npm run docker:up && npm run db:migrate"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "eslint": "^8.56.0",
+    "prettier": "^3.2.5",
+    "turbo": "^1.12.0",
+    "typescript": "^5.3.3"
+  }
+}
