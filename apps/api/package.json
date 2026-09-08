@@ -1,0 +1,37 @@
+{
+  "name": "@to-our-self/api",
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src --fix",
+    "dev": "node --loader tsx src/index.ts",
+    "start": "node dist/index.js",
+    "test": "vitest"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.5",
+    "@types/redis": "^4.0.11",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3",
+    "vitest": "^1.1.0"
+  },
+  "dependencies": {
+    "fastify": "^4.25.2",
+    "@fastify/cors": "^8.5.0",
+    "@fastify/helmet": "^11.1.1",
+    "@fastify/rate-limit": "^9.1.0",
+    "@fastify/websocket": "^11.0.0",
+    "redis": "^4.6.12",
+    "zod": "^3.22.4",
+    "pino": "^8.17.2",
+    "pino-pretty": "^10.3.1",
+    "@to-our-self/shared": "workspace:*",
+    "@to-our-self/database": "workspace:*",
+    "@to-our-self/auth": "workspace:*",
+    "@to-our-self/telegram": "workspace:*",
+    "@to-our-self/game-engine": "workspace:*",
+    "@to-our-self/economy": "workspace:*"
+  }
+}
